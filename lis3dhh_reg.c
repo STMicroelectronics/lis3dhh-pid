@@ -160,6 +160,9 @@ int32_t lis3dhh_block_data_update_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg1.bdu;
 
   return ret;
@@ -206,6 +209,8 @@ int32_t lis3dhh_data_rate_get(const stmdev_ctx_t *ctx,
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
 
+  if (ret != 0) { return ret; }
+
   switch (ctrl_reg1.norm_mod_en)
   {
     case LIS3DHH_POWER_DOWN:
@@ -238,6 +243,9 @@ int32_t lis3dhh_temperature_raw_get(const stmdev_ctx_t *ctx, int16_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_OUT_TEMP_L, buff, 2);
+
+  if (ret != 0) { return ret; }
+
   *val = (int16_t)buff[1];
   *val = (*val * 256) + (int16_t)buff[0];
   *val = (*val / 16);
@@ -259,6 +267,9 @@ int32_t lis3dhh_acceleration_raw_get(const stmdev_ctx_t *ctx, int16_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_OUT_X_L_XL, buff, 6);
+
+  if (ret != 0) { return ret; }
+
   val[0] = (int16_t)buff[1];
   val[0] = (val[0] * 256) + (int16_t)buff[0];
   val[1] = (int16_t)buff[3];
@@ -283,6 +294,9 @@ int32_t lis3dhh_xl_data_ready_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_STATUS, (uint8_t *)&status, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = status.zyxda;
 
   return ret;
@@ -302,6 +316,9 @@ int32_t lis3dhh_xl_data_ovr_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_STATUS, (uint8_t *)&status, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = status.zyxor;
 
   return ret;
@@ -374,6 +391,9 @@ int32_t lis3dhh_reset_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg1.sw_reset;
 
   return ret;
@@ -417,6 +437,9 @@ int32_t lis3dhh_boot_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg1.boot;
 
   return ret;
@@ -460,6 +483,8 @@ int32_t lis3dhh_self_test_get(const stmdev_ctx_t *ctx, lis3dhh_st_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
+
+  if (ret != 0) { return ret; }
 
   switch (ctrl_reg4.st)
   {
@@ -523,6 +548,8 @@ int32_t lis3dhh_filter_config_get(const stmdev_ctx_t *ctx,
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
+
+  if (ret != 0) { return ret; }
 
   switch (ctrl_reg4.dsp)
   {
@@ -620,6 +647,8 @@ int32_t lis3dhh_drdy_notification_mode_get(const stmdev_ctx_t *ctx,
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
 
+  if (ret != 0) { return ret; }
+
   switch (ctrl_reg1.drdy_pulse)
   {
     case LIS3DHH_LATCHED:
@@ -681,6 +710,8 @@ int32_t lis3dhh_int1_mode_get(const stmdev_ctx_t *ctx,
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
 
+  if (ret != 0) { return ret; }
+
   switch (int1_ctrl.int1_ext)
   {
     case LIS3DHH_PIN_AS_INTERRUPT:
@@ -739,6 +770,9 @@ int32_t lis3dhh_fifo_threshold_on_int1_get(const stmdev_ctx_t *ctx,
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int1_ctrl.int1_fth;
 
   return ret;
@@ -782,6 +816,9 @@ int32_t lis3dhh_fifo_full_on_int1_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int1_ctrl.int1_fss5;
 
   return ret;
@@ -825,6 +862,9 @@ int32_t lis3dhh_fifo_ovr_on_int1_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int1_ctrl.int1_ovr;
 
   return ret;
@@ -868,6 +908,9 @@ int32_t lis3dhh_boot_on_int1_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int1_ctrl.int1_boot;
 
   return ret;
@@ -911,6 +954,9 @@ int32_t lis3dhh_drdy_on_int1_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int1_ctrl.int1_drdy;
 
   return ret;
@@ -956,6 +1002,9 @@ int32_t lis3dhh_fifo_threshold_on_int2_get(const stmdev_ctx_t *ctx,
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int2_ctrl.int2_fth;
 
   return ret;
@@ -999,6 +1048,9 @@ int32_t lis3dhh_fifo_full_on_int2_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int2_ctrl.int2_fss5;
 
   return ret;
@@ -1042,6 +1094,9 @@ int32_t lis3dhh_fifo_ovr_on_int2_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int2_ctrl.int2_ovr;
 
   return ret;
@@ -1085,6 +1140,9 @@ int32_t lis3dhh_boot_on_int2_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int2_ctrl.int2_boot;
 
   return ret;
@@ -1128,6 +1186,9 @@ int32_t lis3dhh_drdy_on_int2_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = int2_ctrl.int2_drdy;
 
   return ret;
@@ -1171,6 +1232,8 @@ int32_t lis3dhh_pin_mode_get(const stmdev_ctx_t *ctx, lis3dhh_pp_od_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
+
+  if (ret != 0) { return ret; }
 
   switch (ctrl_reg4.pp_od)
   {
@@ -1249,6 +1312,9 @@ int32_t lis3dhh_fifo_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg4.fifo_en;
 
   return ret;
@@ -1298,6 +1364,9 @@ int32_t lis3dhh_fifo_block_spi_hs_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG5, (uint8_t *)&ctrl_reg5, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg5.fifo_spi_hs_on;
 
   return ret;
@@ -1341,6 +1410,9 @@ int32_t lis3dhh_fifo_watermark_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_FIFO_CTRL, (uint8_t *)&fifo_ctrl, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = fifo_ctrl.fth;
 
   return ret;
@@ -1384,6 +1456,8 @@ int32_t lis3dhh_fifo_mode_get(const stmdev_ctx_t *ctx, lis3dhh_fmode_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_FIFO_CTRL, (uint8_t *)&fifo_ctrl, 1);
+
+  if (ret != 0) { return ret; }
 
   switch (fifo_ctrl.fmode)
   {
@@ -1447,6 +1521,9 @@ int32_t lis3dhh_fifo_full_flag_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_FIFO_SRC, (uint8_t *)&fifo_src, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = fifo_src.fss;
 
   return ret;
@@ -1466,6 +1543,9 @@ int32_t lis3dhh_fifo_ovr_flag_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_FIFO_SRC, (uint8_t *)&fifo_src, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = fifo_src.ovrn;
 
   return ret;
@@ -1485,6 +1565,9 @@ int32_t lis3dhh_fifo_fth_flag_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_FIFO_SRC, (uint8_t *)&fifo_src, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = fifo_src.fth;
 
   return ret;
@@ -1543,6 +1626,9 @@ int32_t lis3dhh_auto_add_inc_get(const stmdev_ctx_t *ctx, uint8_t *val)
   int32_t ret;
 
   ret = lis3dhh_read_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
+
+  if (ret != 0) { return ret; }
+
   *val = ctrl_reg1.if_add_inc;
 
   return ret;
