@@ -139,7 +139,7 @@ int32_t lis3dhh_block_data_update_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg1.bdu = val;
+    ctrl_reg1.bdu = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
@@ -186,7 +186,7 @@ int32_t lis3dhh_data_rate_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl_reg1.norm_mod_en = (uint8_t)val;
+    ctrl_reg1.norm_mod_en = (uint8_t)val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
@@ -246,9 +246,7 @@ int32_t lis3dhh_temperature_raw_get(const stmdev_ctx_t *ctx, int16_t *val)
 
   if (ret != 0) { return ret; }
 
-  *val = (int16_t)buff[1];
-  *val = (*val * 256) + (int16_t)buff[0];
-  *val = (*val / 16);
+  *val = (int16_t)((buff[0] | ((uint16_t)buff[1] << 8)) >> 4);
 
   return ret;
 }
@@ -270,12 +268,9 @@ int32_t lis3dhh_acceleration_raw_get(const stmdev_ctx_t *ctx, int16_t *val)
 
   if (ret != 0) { return ret; }
 
-  val[0] = (int16_t)buff[1];
-  val[0] = (val[0] * 256) + (int16_t)buff[0];
-  val[1] = (int16_t)buff[3];
-  val[1] = (val[1] * 256) + (int16_t)buff[2];
-  val[2] = (int16_t)buff[5];
-  val[2] = (val[2] * 256) + (int16_t)buff[4];
+  val[0] = (int16_t)(buff[0] | ((uint16_t)buff[1] << 8));
+  val[1] = (int16_t)(buff[2] | ((uint16_t)buff[3] << 8));
+  val[2] = (int16_t)(buff[4] | ((uint16_t)buff[5] << 8));
 
   return ret;
 }
@@ -370,7 +365,7 @@ int32_t lis3dhh_reset_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg1.sw_reset = val;
+    ctrl_reg1.sw_reset = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
@@ -416,7 +411,7 @@ int32_t lis3dhh_boot_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg1.boot = val;
+    ctrl_reg1.boot = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
@@ -462,7 +457,7 @@ int32_t lis3dhh_self_test_set(const stmdev_ctx_t *ctx, lis3dhh_st_t val)
 
   if (ret == 0)
   {
-    ctrl_reg4.st = (uint8_t)val;
+    ctrl_reg4.st = (uint8_t)val & 0x03U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
   }
 
@@ -526,7 +521,7 @@ int32_t lis3dhh_filter_config_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl_reg4.dsp = (uint8_t)val;
+    ctrl_reg4.dsp = (uint8_t)val & 0x03U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
   }
 
@@ -624,7 +619,7 @@ int32_t lis3dhh_drdy_notification_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    ctrl_reg1.drdy_pulse = (uint8_t)val;
+    ctrl_reg1.drdy_pulse = (uint8_t)val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
@@ -686,7 +681,7 @@ int32_t lis3dhh_int1_mode_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    int1_ctrl.int1_ext = (uint8_t)val;
+    int1_ctrl.int1_ext = (uint8_t)val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -748,7 +743,7 @@ int32_t lis3dhh_fifo_threshold_on_int1_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    int1_ctrl.int1_fth = val;
+    int1_ctrl.int1_fth = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -795,7 +790,7 @@ int32_t lis3dhh_fifo_full_on_int1_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int1_ctrl.int1_fss5 = val;
+    int1_ctrl.int1_fss5 = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -841,7 +836,7 @@ int32_t lis3dhh_fifo_ovr_on_int1_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int1_ctrl.int1_ovr = val;
+    int1_ctrl.int1_ovr = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -887,7 +882,7 @@ int32_t lis3dhh_boot_on_int1_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int1_ctrl.int1_boot = val;
+    int1_ctrl.int1_boot = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -933,7 +928,7 @@ int32_t lis3dhh_drdy_on_int1_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int1_ctrl.int1_drdy = val;
+    int1_ctrl.int1_drdy = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT1_CTRL, (uint8_t *)&int1_ctrl, 1);
   }
 
@@ -980,7 +975,7 @@ int32_t lis3dhh_fifo_threshold_on_int2_set(const stmdev_ctx_t *ctx,
 
   if (ret == 0)
   {
-    int2_ctrl.int2_fth = val;
+    int2_ctrl.int2_fth = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   }
 
@@ -1027,7 +1022,7 @@ int32_t lis3dhh_fifo_full_on_int2_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int2_ctrl.int2_fss5 = val;
+    int2_ctrl.int2_fss5 = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   }
 
@@ -1073,7 +1068,7 @@ int32_t lis3dhh_fifo_ovr_on_int2_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int2_ctrl.int2_ovr = val;
+    int2_ctrl.int2_ovr = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   }
 
@@ -1119,7 +1114,7 @@ int32_t lis3dhh_boot_on_int2_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int2_ctrl.int2_boot = val;
+    int2_ctrl.int2_boot = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   }
 
@@ -1165,7 +1160,7 @@ int32_t lis3dhh_drdy_on_int2_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    int2_ctrl.int2_drdy = val;
+    int2_ctrl.int2_drdy = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_INT2_CTRL, (uint8_t *)&int2_ctrl, 1);
   }
 
@@ -1211,7 +1206,7 @@ int32_t lis3dhh_pin_mode_set(const stmdev_ctx_t *ctx, lis3dhh_pp_od_t val)
 
   if (ret == 0)
   {
-    ctrl_reg4.pp_od = (uint8_t)val;
+    ctrl_reg4.pp_od = (uint8_t)val & 0x03U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
   }
 
@@ -1291,7 +1286,7 @@ int32_t lis3dhh_fifo_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg4.fifo_en = val;
+    ctrl_reg4.fifo_en = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG4, (uint8_t *)&ctrl_reg4, 1);
   }
 
@@ -1340,7 +1335,7 @@ int32_t lis3dhh_fifo_block_spi_hs_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg5.fifo_spi_hs_on = val;
+    ctrl_reg5.fifo_spi_hs_on = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG5, (uint8_t *)&ctrl_reg5, 1);
   }
 
@@ -1389,7 +1384,7 @@ int32_t lis3dhh_fifo_watermark_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    fifo_ctrl.fth = val;
+    fifo_ctrl.fth = val & 0x1FU;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_FIFO_CTRL, (uint8_t *)&fifo_ctrl, 1);
   }
 
@@ -1435,7 +1430,7 @@ int32_t lis3dhh_fifo_mode_set(const stmdev_ctx_t *ctx, lis3dhh_fmode_t val)
 
   if (ret == 0)
   {
-    fifo_ctrl.fmode = (uint8_t)val;
+    fifo_ctrl.fmode = (uint8_t)val & 0x07U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_FIFO_CTRL, (uint8_t *)&fifo_ctrl, 1);
   }
 
@@ -1604,7 +1599,7 @@ int32_t lis3dhh_auto_add_inc_set(const stmdev_ctx_t *ctx, uint8_t val)
 
   if (ret == 0)
   {
-    ctrl_reg1.if_add_inc = val;
+    ctrl_reg1.if_add_inc = val & 0x01U;
     ret = lis3dhh_write_reg(ctx, LIS3DHH_CTRL_REG1, (uint8_t *)&ctrl_reg1, 1);
   }
 
